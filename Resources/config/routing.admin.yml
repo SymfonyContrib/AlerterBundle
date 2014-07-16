@@ -1,0 +1,19 @@
+alerter_alert_admin_list:
+    path:  /alert
+    defaults:
+        _controller: AlerterBundle:Admin:list
+
+alerter_alert_admin_add:
+    path:  /alert/add
+    defaults:
+        _controller: AlerterBundle:Admin:form
+
+alerter_alert_admin_edit:
+    path:  /alert/{id}/edit
+    defaults:
+        _controller: AlerterBundle:Admin:form
+
+alerter_alert_admin_delete:
+    path:  /alert/{id}/delete
+    defaults:
+        _controller: AlerterBundle:Admin:delete

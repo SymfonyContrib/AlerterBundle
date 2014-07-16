@@ -1,0 +1,31 @@
+{% extends "AlerterBundle::layout.html.twig" %}
+
+{% block page_title %}{{ alert.id ? 'Update' : 'Create' }} alert{% endblock %}
+
+{% block content %}
+    {{ form_start(form) }}
+    {{ form_errors(form) }}
+    <div class="row">
+        <div class="col-sm-3">
+            {{ form_row(form.dataPoint) }}
+        </div>
+        <div class="col-sm-1">
+            {{ form_row(form.operator) }}
+        </div>
+        <div class="col-sm-3">
+            {{ form_row(form.value) }}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-3">
+            {{ form_row(form.alerter) }}
+            {{ form_row(form.level) }}
+            {{ form_row(form.message) }}
+            {{ form_row(form.testInterval) }}
+            {{ form_row(form.enabled) }}
+        </div>
+    </div>
+    {{ form_widget(form.save) }}
+    {{ form_widget(form.cancel) }}
+    {{ form_end(form) }}
+{% endblock %}

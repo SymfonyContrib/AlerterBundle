@@ -1,0 +1,31 @@
+{
+    "name": "symfonycontrib/alerter-bundle",
+    "type": "symfony-bundle",
+    "description": "Symfony2 management and execution of testing data points and alerting on conditions.",
+    "keywords": ["Symfony", "bundle", "alert", "alerting"],
+    "homepage": "http://symfonycontrib.com/",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Alan Doucette",
+            "email": "dragonwize@gmail.com",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php":                        ">=5.4",
+        "symfony/symfony":            "~2.4",
+        "symfonycontrib/cron-bundle": "~1.0"
+    },
+    "autoload": {
+        "psr-0": {
+            "SymfonyContrib\\Bundle\\AlerterBundle\\": ""
+        }
+    },
+    "target-dir": "SymfonyContrib/Bundle/AlerterBundle",
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0.x-dev"
+        }
+    }
+}

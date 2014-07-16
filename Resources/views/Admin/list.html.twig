@@ -1,0 +1,53 @@
+{% extends "AlerterBundle::layout.html.twig" %}
+
+{% block page_title %}Alerts{% endblock %}
+
+{% block content %}
+    <a href="{{ path('alerter_alert_admin_add') }}" class="btn btn-primary btn-sm">
+        <span class="glyphicon glyphicon-plus"></span>
+        <strong>Add Alert</strong>
+    </a>
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th>Enabled</th>
+                <th>Test</th>
+                <th>Alerter</th>
+                <th>Level</th>
+                <th>Created</th>
+                <th>Updated</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for alert in alerts %}
+            <tr>
+                <td>
+                    <span class="{{ alert.enabled ? 'glyphicon glyphicon-ok' : '' }}">
+                        <span class="text-hide">{{ alert.enabled ? 'Y' : 'N' }}</span>
+                    </span>
+                </td>
+                <td>{{ alert.label }}</td>
+                <td>{{ alert.alerter }}</td>
+                <td>{{ alert.level|upper }}</td>
+                <td>{{ alert.created|date('Y-m-d H:i:s') }}</td>
+                <td>{{ alert.updated|date('Y-m-d H:i:s') }}</td>
+                <td>
+                    <div class="btn-group">
+                        <a title="Edit" href="{{ path('alerter_alert_admin_edit', {"id": alert.id}) }}" class="btn btn-primary btn-sm">
+                            <span class="glyphicon glyphicon-pencil"></span>
+                        </a>
+                        <a title="Delete" href="{{ path('alerter_alert_admin_delete', {"id": alert.id}) }}" class="btn btn-danger btn-sm">
+                            <span class="glyphicon glyphicon-trash"></span>
+                        </a>
+                    </div>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="7">No alerts found.</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

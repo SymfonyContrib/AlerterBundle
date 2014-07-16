@@ -1,0 +1,96 @@
+SymfonyContrib\Bundle\AlerterBundle\Entity\Alert:
+    type: entity
+    #repositoryClass: SymfonyContrib\Bundle\AlerterBundle\Entity\Repository\AlertRepository
+    table: alert
+    oneToOne:
+        cron:
+            targetEntity: SymfonyContrib\Bundle\CronBundle\Entity\Cron
+            fetch: EAGER
+            joinColumn:
+                name: cron_id
+                referencedColumnName: id
+                nullable: false
+            cascade:
+                - persist
+                - remove
+    id:
+        id:
+            type: integer
+            generator:
+                strategy: auto
+    fields:
+        dataPoint:
+            column: data_point
+            type: string
+            length: 255
+            options:
+                comment: Data point name.
+        operator:
+            type: string
+            length: 10
+            options:
+                comment: Operator to test data point with.
+        value:
+            column: alert_value
+            type: string
+            length: 255
+            options:
+                comment: Value to test data point against.
+        alerter:
+            type: string
+            length: 255
+            options:
+                comment: Name of a configured alerter.
+        level:
+            column: alert_level
+            type: string
+            length: 255
+            options:
+                comment: PSR-3 alert level to use when test is true.
+        message:
+            type: string
+            length: 255
+            options:
+                comment: Message to send when test fails.
+        testInterval:
+            column: test_interval
+            type: string
+            length: 255
+            options:
+                comment: Test interval.
+        enabled:
+            type: boolean
+            options:
+                comment: Enabled/Disabled boolean flag.
+        created:
+            type: datetime
+            options:
+                comment: Date and time this entry was created.
+        updated:
+            type: datetime
+            nullable: true
+            options:
+                comment: Date and time this entry was updated.
+    uniqueConstraints:
+        alert_key:
+            columns:
+                - data_point
+                - operator
+                - alert_value
+    indexes:
+        alert_data_point:
+            columns:
+                - data_point
+        alert_test_interval:
+            columns:
+                - test_interval
+        alert_enabled:
+            columns:
+                - enabled
+    lifecycleCallbacks:
+        preFlush:
+            - preFlush
+        prePersist:
+            - prePersist
+        preUpdate:
+            - preUpdate

@@ -1,0 +1,18 @@
+parameters:
+    alerter.class: SymfonyContrib\Bundle\AlerterBundle\Alerter
+    alerter.form.alert.class: SymfonyContrib\Bundle\AlerterBundle\Form\AlertForm
+
+services:
+    alerter:
+        class: %alerter.class%
+        calls:
+            - [setContainer, [@service_container]]
+
+    alerter.form.alert:
+        class: %alerter.form.alert.class%
+        arguments:
+            - %alerter.alerters%
+            - %alerter.data_points%
+        tags:
+            - name: form.type
+              alias: alerter_alert_form
