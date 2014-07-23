@@ -17,3 +17,8 @@ alerter_alert_admin_delete:
     path:  /alert/{id}/delete
     defaults:
         _controller: AlerterBundle:Admin:delete
+
+alerter_alert_admin_test:
+    path:  /alert/{id}/test
+    defaults:
+        _controller: AlerterBundle:Admin:testAlert

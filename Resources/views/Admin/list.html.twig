@@ -11,7 +11,7 @@
         <thead>
             <tr>
                 <th>Enabled</th>
-                <th>Test</th>
+                <th>Expression</th>
                 <th>Alerter</th>
                 <th>Level</th>
                 <th>Created</th>
@@ -27,13 +27,16 @@
                         <span class="text-hide">{{ alert.enabled ? 'Y' : 'N' }}</span>
                     </span>
                 </td>
-                <td>{{ alert.label }}</td>
+                <td>{{ alert.expression }}</td>
                 <td>{{ alert.alerter }}</td>
                 <td>{{ alert.level|upper }}</td>
                 <td>{{ alert.created|date('Y-m-d H:i:s') }}</td>
                 <td>{{ alert.updated|date('Y-m-d H:i:s') }}</td>
                 <td>
                     <div class="btn-group">
+                        <a title="Test Alert" href="{{ path('alerter_alert_admin_test', {"id": alert.id}) }}" class="btn btn-default btn-sm">
+                            <span class="glyphicon glyphicon-play"></span>
+                        </a>
                         <a title="Edit" href="{{ path('alerter_alert_admin_edit', {"id": alert.id}) }}" class="btn btn-primary btn-sm">
                             <span class="glyphicon glyphicon-pencil"></span>
                         </a>

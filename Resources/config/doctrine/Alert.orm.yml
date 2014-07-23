@@ -19,23 +19,16 @@ SymfonyContrib\Bundle\AlerterBundle\Entity\Alert:
             generator:
                 strategy: auto
     fields:
-        dataPoint:
-            column: data_point
+        expression:
             type: string
             length: 255
             options:
-                comment: Data point name.
-        operator:
-            type: string
-            length: 10
+                comment: Expression language string that should evaluate to boolean.
+        parsedExpression:
+            column: parsed_expression
+            type: text
             options:
-                comment: Operator to test data point with.
-        value:
-            column: alert_value
-            type: string
-            length: 255
-            options:
-                comment: Value to test data point against.
+                comment: Expression parsed and serialized.
         alerter:
             type: string
             length: 255
@@ -74,16 +67,10 @@ SymfonyContrib\Bundle\AlerterBundle\Entity\Alert:
     uniqueConstraints:
         alert_key:
             columns:
-                - data_point
-                - operator
-                - alert_value
+                - expression
+                - alerter
+                - alert_level
     indexes:
-        alert_data_point:
-            columns:
-                - data_point
-        alert_test_interval:
-            columns:
-                - test_interval
         alert_enabled:
             columns:
                 - enabled

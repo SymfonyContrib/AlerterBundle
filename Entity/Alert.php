@@ -5,6 +5,7 @@ use Doctrine\ORM\Event\PreFlushEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use SymfonyContrib\Bundle\CronBundle\Entity\Cron;
+use SymfonyContrib\Bundle\AlerterBundle\ExpressionLanguage\ExpressionLanguage;
 
 /**
  * Alert entity.
@@ -15,13 +16,10 @@ class Alert
     protected $id;
 
     /** @var string */
-    protected $dataPoint;
+    protected $expression;
 
     /** @var string */
-    protected $operator;
-
-    /** @var string */
-    protected $value;
+    protected $parsedExpression;
 
     /** @var string */
     protected $alerter;
@@ -50,13 +48,12 @@ class Alert
 
     public function __construct()
     {
-        $this->value   = '';
         $this->enabled = true;
         $this->created = new \DateTime();
 
         $cron = new Cron();
         $cron->setOwner('SymfonyContrib:AlerterBundle');
-        $cron->setDesc('Checks a key data point for an out of bounds value and alerts on issues found.');
+        $cron->setDesc('Evaluates an expression and alerts on true.');
         $cron->setGroup('Alerter');
         $this->cron = $cron;
     }
@@ -79,6 +76,7 @@ class Alert
     public function prePersist(LifecycleEventArgs $args)
     {
         $this->updateCron();
+        $this->parseExpression();
     }
 
     /**
@@ -91,6 +89,10 @@ class Alert
         if (!$args->hasChangedField('updated')) {
             $this->updated = new \DateTime();
         }
+
+        if ($args->hasChangedField('expression')) {
+            $this->parseExpression();
+        }
     }
 
     /**
@@ -99,10 +101,21 @@ class Alert
     public function updateCron()
     {
         $cron = $this->getCron();
-        $cron->setName('alerter-' . rawurlencode($this->getLabel()));
-        $cron->setJob('alerter:datapoint_' . $this->getDataPoint());
+        $cron->setName('alerter-' . $this->getId());
+        $cron->setJob('alerter.manager:evaluateCron');
         $cron->setRunInterval($this->getTestInterval());
         $cron->setEnabled($this->isEnabled());
+    }
+
+    /**
+     * Parse expression to save time during execution.
+     */
+    public function parseExpression()
+    {
+        $language   = new ExpressionLanguage();
+        $names      = ['container'];
+        $expression = serialize($language->parse($this->expression, $names)->getNodes());
+        $this->setParsedExpression($expression);
     }
 
     /**
@@ -142,7 +155,7 @@ class Alert
      */
     public function getLabel()
     {
-        return $this->getDataPoint() . ' ' . $this->getOperator() . ' ' . $this->getValue();
+        return $this->getExpression() . '--' . $this->getAlerter() . '--' . $this->getLevel();
     }
 
     /**
@@ -166,13 +179,13 @@ class Alert
     }
 
     /**
-     * @param string $dataPoint
+     * @param string $expression
      *
      * @return Alert
      */
-    public function setDataPoint($dataPoint)
+    public function setExpression($expression)
     {
-        $this->dataPoint = $dataPoint;
+        $this->expression = $expression;
 
         return $this;
     }
@@ -180,9 +193,29 @@ class Alert
     /**
      * @return string
      */
-    public function getDataPoint()
+    public function getExpression()
     {
-        return $this->dataPoint;
+        return $this->expression;
+    }
+
+    /**
+     * @param string $parsedExpression
+     *
+     * @return Alert
+     */
+    public function setParsedExpression($parsedExpression)
+    {
+        $this->parsedExpression = $parsedExpression;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getParsedExpression()
+    {
+        return $this->parsedExpression;
     }
 
     /**
@@ -266,26 +299,6 @@ class Alert
     }
 
     /**
-     * @param string $operator
-     *
-     * @return Alert
-     */
-    public function setOperator($operator)
-    {
-        $this->operator = $operator;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getOperator()
-    {
-        return $this->operator;
-    }
-
-    /**
      * @param string $testInterval
      *
      * @return Alert
@@ -323,26 +336,6 @@ class Alert
     public function getUpdated()
     {
         return $this->updated;
-    }
-
-    /**
-     * @param string $value
-     *
-     * @return Alert
-     */
-    public function setValue($value)
-    {
-        $this->value = $value;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getValue()
-    {
-        return $this->value;
     }
 
     /**

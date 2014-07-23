@@ -15,37 +15,16 @@ class AlertForm extends AbstractType
     /** @var array */
     public $alerters;
 
-    /** @var array */
-    public $dataPoints;
-
-    public function __construct(array $alerters = [], array $dataPoints = [])
+    public function __construct(array $alerters = [])
     {
         $this->alerters   = $alerters;
-        $this->dataPoints = $dataPoints;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('dataPoint', 'choice', [
-                'choices' => array_combine(array_keys($this->dataPoints), array_keys($this->dataPoints)),
-            ])
-            ->add('operator', 'choice', [
-                'choices' => [
-                    '='         => '=',
-                    '!='        => '!=',
-                    '>'         => '>',
-                    '>='        => '>=',
-                    '<'         => '<',
-                    '<='        => '<=',
-                    'is true'   => 'is true',
-                    'is false'  => 'is false',
-                    'not true'  => 'not true',
-                    'not false' => 'not false',
-                ],
-            ])
-            ->add('value', 'text', [
-                'required' => false,
+            ->add('expression', 'text', [
+
             ])
             ->add('alerter', 'choice', [
                 'choices' => array_combine(array_keys($this->alerters), array_keys($this->alerters)),

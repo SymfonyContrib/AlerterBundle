@@ -31,6 +31,10 @@ $ composer update symfonycontrib/alerter-bundle
     new SymfonyContrib\Bundle\AlerterBundle\AlerterBundle(),
 ```
 
+### 4. Add routing for admin interface:
+
+
+
 ## Usage Examples
 
 @todo

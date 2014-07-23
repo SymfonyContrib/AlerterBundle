@@ -18,27 +18,12 @@ class Configuration implements ConfigurationInterface
     public function getConfigTreeBuilder()
     {
         $treeBuilder = new TreeBuilder();
-        $rootNode = $treeBuilder->root('alerter');
+        $rootNode    = $treeBuilder->root('alerter');
 
         $rootNode->children()
             ->arrayNode('alerters')
                 ->defaultValue([])
-                ->useAttributeAsKey('name')
                 ->prototype('scalar')->end()
-            ->end()
-            ->arrayNode('data_points')
-                ->defaultValue([])
-                ->useAttributeAsKey('name')
-                ->prototype('array')
-                    ->children()
-                        ->scalarNode('service')
-                            ->isRequired()
-                        ->end()
-                        ->scalarNode('method')
-                            ->isRequired()
-                        ->end()
-                    ->end()
-                ->end()
             ->end()
         ->end();
 

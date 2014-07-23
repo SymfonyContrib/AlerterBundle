@@ -19,7 +19,7 @@ class AdminController extends Controller
 
         $dql = "SELECT a
                 FROM AlerterBundle:Alert a
-                ORDER BY a.dataPoint ASC";
+                ORDER BY a.created DESC";
         $alerts = $em->createQuery($dql)->getResult();
 
         return $this->render('AlerterBundle:Admin:list.html.twig', [
@@ -115,6 +115,28 @@ class AdminController extends Controller
         $msg = 'Deleted ' . $alert->getLabel();
         $this->get('session')->getFlashBag()->add('success', $msg);
 
+        return $this->redirect($this->generateUrl('alerter_alert_admin_list'));
+    }
+
+    /**
+     * @param int $id
+     *
+     * @return RedirectResponse
+     */
+    public function testAlertAction($id)
+    {
+        $alert = $this->getDoctrine()
+            ->getRepository('AlerterBundle:Alert')
+            ->find($id);
+
+        $manager = $this->get('alerter.manager');
+        $manager->evaluateAlert($alert);
+
+        // Create a success message for the user.
+        $msg = 'Tested ' . $alert->getLabel();
+        $this->get('session')->getFlashBag()->add('success', $msg);
+
+        // Redirect to the admin list page.
         return $this->redirect($this->generateUrl('alerter_alert_admin_list'));
     }
 }
